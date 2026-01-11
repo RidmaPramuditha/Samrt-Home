@@ -4,13 +4,14 @@ int ledPin = 4;
 int buzzerPin = 7;
 int pirPin = 6;
 int pirPinTwo = 5;
+#define MQ2pin 0
 
 //Variables
-//int pirState = LOW;
-//int pirStateTwo = LOW;
+#define Threshold 90
 int ldrValue = 0;
 int val = 0;
 int valTwo = 0;
+float sensorValueMQ2;
 
 void setup() {
   Serial.begin(9600);
@@ -19,13 +20,15 @@ void setup() {
   pinMode(buzzerPin, OUTPUT);   // declare buzzer as output
   pinMode(pirPin, INPUT);       // declare PIR Sensor as input
   pinMode(pirPinTwo, INPUT);       // declare PIR Sensor as input
+  Serial.println("MQ2 warming up!");
   Serial.begin(9600);
 }
 
 void  loop() {
   ldrSensor();
   pirSensor();
-  //pirSensorTwo();
+  gasdetector();
+
 }
 
 void ldrSensor() {
@@ -54,58 +57,29 @@ void pirSensor() {
   valTwo = digitalRead(pirPinTwo);
   Serial.print("PIR Sensor Value Two=");
   Serial.println(valTwo);
-  
+
   if (val == HIGH || valTwo == HIGH)
   {
     digitalWrite(buzzerPin, HIGH);
-
-    /*if (pirState == LOW || pirStateTwo == LOW)
-    {
-      Serial.println("Motion detected!");
-      pirState = HIGH;
-      Serial.println("Motion detected - PIR Two!");
-      pirStateTwo = HIGH;
-    }*/
+    delay(500);
   }
   else
   {
     digitalWrite(buzzerPin, LOW);
-
-    /*if (pirState == HIGH || pirStateTwo == HIGH) 
-    {
-      Serial.println("Motion ended!");
-      pirState = LOW;
-      Serial.println("Motion ended!");
-      pirStateTwo = LOW;
-    }*/
-    delay(1000);
+    delay(500);
   }
 }
 
 
-/*void pirSensorTwo() {
-  valTwo = digitalRead(pirPinTwo);
-  Serial.print("PIR Sensor Value Two=");
-  Serial.println(valTwo);
-  if (valTwo == HIGH)
-  {
+void gasdetector() {
+  sensorValueMQ2 = analogRead(MQ2pin);  // read analog input pin 0
+  Serial.print("Sensor Value: ");
+  Serial.print(sensorValueMQ2);
+  
+  if (sensorValueMQ2 > Threshold) {
+    Serial.print(" | Gas detected!");
     digitalWrite(buzzerPin, HIGH);
-
-    if (pirStateTwo == LOW)
-    {
-      Serial.println("Motion detected - PIR Two!");
-      pirStateTwo = HIGH;
-    }
   }
-  else
-  {
-    digitalWrite(buzzerPin, LOW);
-
-    if (pirStateTwo == HIGH)
-    {
-      Serial.println("Motion ended!");
-      pirStateTwo = LOW;
-    }
-    delay(5000);
-  }
-}*/
+  Serial.println("");
+  delay(2000);  // wait 2s for next reading
+}
