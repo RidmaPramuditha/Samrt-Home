@@ -9,8 +9,8 @@ int ledPin = 4;
 int buzzerPin = 7;
 int pirPin = 6;
 int pirPinTwo = 5;
-#define MQ2pin 0 //Analog A0
-Adafruit_SSD1306 oled = Adafruit_SSD1306(128, 64, &Wire);
+#define mq2Pin 0 //Analog A0
+Adafruit_SSD1306 oled = Adafruit_SSD1306(128, 64, &Wire); //OLED Display
 
 //Variables
 #define Threshold 90
@@ -101,8 +101,8 @@ void pirSensor() {
 
 
 void gasdetector() {
-  sensorValueMQ2 = analogRead(MQ2pin);  // read analog input pin 0
-  Serial.print("Sensor Value: ");
+  sensorValueMQ2 = analogRead(mq2Pin);  // read analog input pin 0
+  Serial.print("MQ 2 Sensor Value: ");
   Serial.print(sensorValueMQ2);
 
   if (sensorValueMQ2 > Threshold) {
